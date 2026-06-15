@@ -1,0 +1,5 @@
+**/.terraform/
+**/*.exe
+**/kubectl-*
+**/*.tfstate
+**/*.tfstate.backup

@@ -1,0 +1,24 @@
+kind: Cluster
+apiVersion: kind.x-k8s.io/v1alpha4
+nodes:
+- role: control-plane
+  extraPortMappings:
+  - containerPort: 30001
+    hostPort: 30001
+- role: worker
+- role: worker
+networking:
+  disableDefaultCNI: true
+  podSubnet: 192.168.0.0/16
+
+ #aws = sg
+ # azure = nsg
+ #gcp = firewall rules
+ #metallb
+
+ #istioctl verify install
+
+ # k get crds | grep istio | wc -l
+# k get ns --show-labels | grep istio
+
+#curl -s -0 /dev/null <load balancer IP>/productpage

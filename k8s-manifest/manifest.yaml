@@ -1,0 +1,139 @@
+#create three pods: frontend, backend, db
+#create services for each pod
+apiVersion: v1
+kind: Pod
+metadata:
+  name: frontend
+  labels:
+    role: frontend
+spec:
+  containers:
+    - name: my-app-container
+      image: nginx
+      ports:
+        - containerPort: 80
+      envFrom:
+        - configMapRef:
+            name: game-demo
+      resources:
+        limits:
+          memory: "512Mi"
+          cpu: "500m"
+        requests:
+          memory: "256Mi"
+          cpu: "250m"
+  initContainers:
+    - name: init-myservice
+      image: busybox
+      command: ['sh', '-c', 'echo The app is running! && sleep 3600']
+      restartPolicy: Always
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: backend
+  labels:
+    role: backend
+spec:
+  containers:
+    - name: my-app-container
+      image: nginx
+      ports:
+        - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontend
+spec:
+  selector:
+    role: frontend
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: backend
+spec:
+  selector:
+    role: backend
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: db
+  labels:
+    role: db
+spec:
+  containers:
+    - name: my-app-container
+      image: mysql:latest
+      env:
+        - name: MYSQL_ROOT_PASSWORD
+          value: "password"
+        - name: MYSQL_DATABASE
+          value: "mydb"
+        - name: MYSQL_USER
+          value: "user"
+      ports:
+        - containerPort: 3306
+---
+apiVersion: v1
+kind: Service
+metadata:
+ name: db-service
+spec:
+  selector:
+    role: db
+  ports:
+    - protocol: TCP
+      port: 3306
+      targetPort: 3306
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: staging
+  labels:
+    istio-injection: enabled
+    monitoring: prometheus
+
+
+# run k exec -it my-app-pod -- /bin/bash to access the pod's shell and see if u can curl the service of the second pod
+
+#curl my-secondapp-service:80
+
+#if successful, then the two pods can communicate with each other via their services
+
+#apt-get update && apt-get install curl -y
+#apt-get update && apt-get install telnet -y
+
+#install calico
+
+
+#istio peer authentication enables mtls to encrypt service to service traffic
+
+#istio destination rule  can allow u define subsets 
+#istio virtual service can allow u split traffic based on the routes defined and the subsets
+#istio circuit breaking using traffic policy in destination rules
+
+# the 2 versions of the application SHOULD use  the same SVC (VERY IMPORTANT)
+
+curl -- headers "Host: myapp.com" http://frontend:80
+
+curl -- header "Host: app.devopsbyexample.com" http://<SVC hostname>/api/devices
+#k8s  constructs:
+# kind:Podmonitor 
+
+
+while true; do curl -- header "Host: app.devopsbyexample.com" http://<SVC hostname>/api/devices; && echo "Request sent" && sleep 0.2; done
+
+# devops hobbies on youtube:
+# https://www.youtube.com/c/DevOpsHobbies/videos
