@@ -22,3 +22,7 @@ networking:
 # k get ns --show-labels | grep istio
 
 #curl -s -0 /dev/null <load balancer IP>/productpage
+
+#kubectl create -f https://raw.githubusercontent.com/projectcalico/calico/v3.32.0/manifests/tigera-operator.yaml
+
+#kubectl create -f https://raw.githubusercontent.com/projectcalico/calico/v3.32.0/manifests/custom-resources.yaml
