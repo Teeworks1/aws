@@ -21,8 +21,14 @@ networking:
  # k get crds | grep istio | wc -l
 # k get ns --show-labels | grep istio
 
+#kubectl label namespace <namespace-name> istio-injection=disabled
+
 #curl -s -0 /dev/null <load balancer IP>/productpage
 
 #kubectl create -f https://raw.githubusercontent.com/projectcalico/calico/v3.32.0/manifests/tigera-operator.yaml
 
 #kubectl create -f https://raw.githubusercontent.com/projectcalico/calico/v3.32.0/manifests/custom-resources.yaml
+
+
+#keda medium docs
+#https://medium.com/@mgaurang123/keda-event-driven-autoscaling-for-kubernetes-that-actually-saves-you-money-42cc40c35415
