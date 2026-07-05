@@ -124,7 +124,7 @@ resource " terracurl_http" "example" {
   max_retries = 5
   retry_interval = 10
 }
-#terraform outputs
+#terraform output
 #ssh <name of user>@$(terraform output --raw public_ip)
 #name of user is essentially the username defined in the tf server configuration
 #https://www.youtube.com/watch?v=Xni8GUcWQ_s&t=966s
