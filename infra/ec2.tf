@@ -103,14 +103,7 @@ resource "aws_instance" "test" {
   subnet_id              = aws_subnet.example2.id
   vpc_security_group_ids = [aws_security_group.allow_ssh.id, ]
 
-  user_data = <<-EOF
-                #!/bin/bash
-                sudo yum update -y
-                sudo yum install -y httpd
-                sudo systemctl start httpd
-                sudo systemctl enable httpd
-                echo '<h1>Welcome to Teeworks Infrastructure - Bastion Host</h1>' | sudo tee /var/www/html/index.html
-                EOF
+  user_data =  file("${path.module}/scripts/startup-script.sh")
 
   tags = merge(
     {
@@ -119,3 +112,19 @@ resource "aws_instance" "test" {
     local.common_tags
   )
 }
+resource " terracurl_http" "example" {
+  url = "http://${aws_instance.test.public_ip}:80"
+  method = "GET"
+  headers = {
+    "Content-Type" = "application/json"
+  }
+  response {
+    status_code = 200
+  }
+  max_retries = 5
+  retry_interval = 10
+}
+#terraform outputs
+#ssh <name of user>@$(terraform output --raw public_ip)
+#name of user is essentially the username defined in the tf server configuration
+#https://www.youtube.com/watch?v=Xni8GUcWQ_s&t=966s
